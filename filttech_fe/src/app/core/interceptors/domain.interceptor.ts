@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
-const API_BASE_URL = 'https://tech-site.aletbeta.com/api/';
+const API_BASE_URL = 'https://filtech.app.aletcloud.com/api/';
 
 export const domainInterceptor: HttpInterceptorFn = (req, next) => {
   const isAbsolute = /^https?:\/\//i.test(req.url);
