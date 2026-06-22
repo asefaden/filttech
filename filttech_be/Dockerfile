@@ -25,7 +25,8 @@ RUN apk add --no-cache \
     freetype-dev libjpeg-turbo-dev libwebp-dev \
     icu-dev icu-data-full \
     mysql-client \
-    nginx supervisor
+    nginx supervisor \
+    libxml2
 
 # PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
