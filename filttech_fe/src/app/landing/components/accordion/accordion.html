@@ -1,0 +1,75 @@
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 py-10">
+  <!-- LEFT COLUMN -->
+  <div class="space-y-4">
+    @for (item of items.slice(0, 3); track $index) {
+    <div
+      class="rounded-xl border border-[#CCE5FF] p-5 shadow-sm cursor-pointer transition text-left"
+      (click)="toggle($index)"
+      [ngClass]="{
+        'bg-blue-50': openIndex === $index,
+        'hover:bg-gray-50': openIndex !== $index
+      }"
+    >
+      <div class="flex items-center justify-between">
+        <h3 class="font-medium text-gray-900">{{ item.title }}</h3>
+        <span
+          class="text-xl"
+          [class.text-gray-700]="openIndex === $index"
+          [class.text-gray-400]="openIndex !== $index"
+        >
+          {{ openIndex === $index ? '−' : '+' }}
+        </span>
+      </div>
+
+      <!-- Smooth Transition Content -->
+      <div
+        class="accordion-content text-gray-600 text-sm leading-relaxed"
+        [style.max-height]="openIndex === $index ? '200px' : '0px'"
+        [style.margin-top]="openIndex === $index ? '1.2rem' : '0px'"
+        [style.opacity]="openIndex === $index ? '1' : '0'"
+      >
+        <p class="">
+          {{ item.content }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="space-y-4">
+    @for (item of items.slice(3); track $index) {
+    <div
+      class="rounded-xl border border-[#CCE5FF] p-5 shadow-sm cursor-pointer transition text-left"
+      (click)="toggle($index + 3)"
+      [ngClass]="{
+        'bg-blue-50': openIndex === $index + 3,
+        'hover:bg-gray-50': openIndex !== $index + 3
+      }"
+    >
+      <div class="flex items-center justify-between">
+        <h3 class="font-medium text-gray-900">{{ item.title }}</h3>
+        <span
+          class="text-xl"
+          [class.text-gray-700]="openIndex === $index + 3"
+          [class.text-gray-400]="openIndex !== $index + 3"
+        >
+          {{ openIndex === $index + 3 ? '−' : '+' }}
+        </span>
+      </div>
+
+      <!-- Smooth Transition Content -->
+      <div
+        class="accordion-content text-gray-600 text-sm leading-relaxed"
+        [style.max-height]="openIndex === $index + 3 ? '200px' : '0px'"
+        [style.opacity]="openIndex === $index + 3 ? '1' : '0'"
+        [style.margin-top]="openIndex === $index + 3 ? '1.2rem' : '0px'"
+      >
+        <p class="">
+          {{ item.content }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+</div>

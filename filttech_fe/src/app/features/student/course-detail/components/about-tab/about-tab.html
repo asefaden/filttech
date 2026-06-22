@@ -1,0 +1,35 @@
+<div class="space-y-6 mt-6">
+  @if (section().introduction) {
+  <div>
+    <h2 class="text-2xl font-semibold mb-4">Introduction</h2>
+    <div
+      class="prose max-w-none text-gray-600"
+      [innerHTML]="sanitizeHtml(section().introduction)"
+    ></div>
+  </div>
+  } @if (section().description) {
+  <div>
+    <h2 class="text-2xl font-semibold mb-4">Description</h2>
+    <div
+      class="prose max-w-none text-gray-600"
+      [innerHTML]="sanitizeHtml(section().description)"
+    ></div>
+  </div>
+  } @if (section().example) {
+  <div>
+    <h2 class="text-xl font-semibold mb-4">Example</h2>
+    <div
+      class="p-4 bg-white border border-gray-200 rounded-lg prose max-w-none"
+      [innerHTML]="sanitizeHtml(section().example)"
+    ></div>
+  </div>
+  } @if (section().example_explanation) {
+  <div>
+    <h2 class="text-xl font-semibold mb-4">Explanation</h2>
+    <div
+      class="prose max-w-none text-gray-600"
+      [innerHTML]="sanitizeHtml(section().example_explanation)"
+    ></div>
+  </div>
+  }
+</div>

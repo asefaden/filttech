@@ -1,0 +1,37 @@
+<div class="relative w-full">
+  <!-- Prev Button -->
+  <button
+    (click)="prev()"
+    class="absolute left-0 lg:-left-8 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md p-3 rounded-full hover:scale-105 transition"
+  >
+    &lt;
+  </button>
+
+  <!-- NEXT Button -->
+  <button
+    (click)="next()"
+    class="absolute right-0 lg:-right-8 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md p-3 rounded-full hover:scale-105 transition"
+  >
+    &gt;
+  </button>
+
+  <!-- Scroll Container -->
+  <div
+    #slider
+    (mouseenter)="pauseAutoplay()"
+    (mouseleave)="resumeAutoplay()"
+    class="w-full overflow-x-auto scrollbar-hide md:px-10 px-6 snap-x snap-mandatory py-10 transition-all duration-300"
+  >
+    <div class="grid grid-flow-col gap-6">
+      @for (course of courses(); track course.id) {
+
+      <app-course-card
+        [course]="course"
+        [cardwidth]="cardWidth()"
+        [has_favorite]="course.is_favorite === undefined ? false : true"
+      ></app-course-card>
+
+      }
+    </div>
+  </div>
+</div>

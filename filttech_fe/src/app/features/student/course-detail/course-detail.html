@@ -1,0 +1,271 @@
+@if (loading()) {
+<div class="flex justify-center items-center py-20">
+  <div class="relative w-16 h-16">
+    <div class="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full"></div>
+    <div
+      class="absolute top-0 left-0 w-full h-full border-4 border-blue-600 rounded-full border-t-transparent animate-spin"
+    ></div>
+  </div>
+</div>
+} @else if (error()) {
+<div class="text-center py-12">
+  <p class="text-red-500">{{ error() }}</p>
+</div>
+} @else if (course()) {
+<div class="max-w-7xl mx-auto px-4 py-4 pb-32 md:pb-0">
+  <div class="grid grid-cols-1 lg:grid-cols-3 md:gap-8 gap-4 lg:h-[calc(100vh-6rem)]">
+    <!-- RIGHT SIDEBAR - Desktop Only -->
+    <div class="space-y-2 pr-2 lg:pb-20 relative">
+      <!-- Top Navigation -->
+      <div class="sticky top-0 bg-white z-10 pb-2">
+        <button
+          (click)="goBack()"
+          class="text-slate-500 hover:text-slate-800 cursor-pointer flex items-center gap-2 z-20 text-xs md:text-base"
+        >
+          <span>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.82484 13L12.7248 17.9C12.9248 18.1 13.0208 18.3334 13.0128 18.6C13.0048 18.8667 12.9005 19.1 12.6998 19.3C12.4998 19.4834 12.2665 19.5794 11.9998 19.588C11.7332 19.5967 11.4998 19.5007 11.2998 19.3L4.69984 12.7C4.59984 12.6 4.52884 12.4917 4.48684 12.375C4.44484 12.2584 4.42451 12.1334 4.42584 12C4.42718 11.8667 4.44818 11.7417 4.48884 11.625C4.52951 11.5084 4.60018 11.4 4.70084 11.3L11.3008 4.70005C11.4842 4.51672 11.7135 4.42505 11.9888 4.42505C12.2642 4.42505 12.5015 4.51672 12.7008 4.70005C12.9008 4.90005 13.0008 5.13772 13.0008 5.41305C13.0008 5.68838 12.9008 5.92572 12.7008 6.12505L7.82484 11H18.9998C19.2832 11 19.5208 11.096 19.7128 11.288C19.9048 11.48 20.0005 11.7174 19.9998 12C19.9992 12.2827 19.9032 12.5204 19.7118 12.713C19.5205 12.9057 19.2832 13.0014 18.9998 13H7.82484Z"
+                fill="#7F848D"
+              />
+            </svg>
+          </span>
+          Back To Courses
+        </button>
+      </div>
+
+      <p class="px-4 py-2 text-sm text-[#515863] bg-gray-200 capitalize w-fit line-clamp-1">
+        {{ course()?.category }}
+      </p>
+
+      <h1
+        class="text-lg font-semibold leading Aliquid similique ut dolores sequi non soluta. Et molestias qui dolores-tight"
+      >
+        {{ course()!.name }}
+      </h1>
+      <div class="flex items-center space-x-1">
+        <span class="font-bold text-lg text-[#1F2937]">
+          {{ parseFloat(course()!.rating).toFixed(1) }}
+        </span>
+        <svg
+          width="17"
+          height="16.393"
+          viewBox="0 0 17 16.393"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7.779 0.437c0.17 -0.583 0.996 -0.583 1.166 0l1.433 4.915a0.607 0.607 0 0 0 0.601 0.437l5.118 -0.156c0.607 -0.018 0.862 0.767 0.36 1.109l-4.232 2.881a0.607 0.607 0 0 0 -0.23 0.707l1.73 4.819c0.205 0.571 -0.463 1.056 -0.944 0.685l-4.048 -3.133a0.607 0.607 0 0 0 -0.744 0L3.942 15.834c-0.48 0.372 -1.148 -0.114 -0.943 -0.685l1.729 -4.819a0.607 0.607 0 0 0 -0.229 -0.707L0.267 6.742c-0.501 -0.342 -0.246 -1.127 0.36 -1.109l5.118 0.155a0.607 0.607 0 0 0 0.601 -0.437z"
+            fill="#FAB437"
+          />
+        </svg>
+      </div>
+      <div
+        class="flex items-center justify-between text-sm text-[#8A9BAD] pb-8 border-b-2 border-{#A5C6F5}"
+      >
+        <p>Based on {{ course()?.rating_count }} reviews</p>
+        <p class="flex items-center space-x-2">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.7 12.6V14H6.3V12.6H0.7C0.504 12.6 0.338333 12.5323 0.203 12.397C0.0676667 12.2617 0 12.096 0 11.9V0.7C0 0.504 0.0676667 0.338332 0.203 0.202999C0.338333 0.0676658 0.504 0 0.7 0H4.9C5.31067 0 5.698 0.0839998 6.062 0.252C6.426 0.42 6.73867 0.653333 7 0.952C7.26133 0.653333 7.574 0.42 7.938 0.252C8.302 0.0839998 8.68933 0 9.1 0H13.3C13.496 0 13.6617 0.0676658 13.797 0.202999C13.9323 0.338332 14 0.504 14 0.7V11.9C14 12.096 13.9323 12.2617 13.797 12.397C13.6617 12.5323 13.496 12.6 13.3 12.6H7.7ZM12.6 11.2V1.4H9.1C8.848 1.4 8.61467 1.463 8.4 1.589C8.18533 1.715 8.015 1.88533 7.889 2.1C7.763 2.31467 7.7 2.548 7.7 2.8V11.2H12.6ZM6.3 11.2V2.8C6.3 2.548 6.237 2.31467 6.111 2.1C5.985 1.88533 5.81467 1.715 5.6 1.589C5.38533 1.463 5.152 1.4 4.9 1.4H1.4V11.2H6.3Z"
+              fill="#6B7280"
+            />
+          </svg>
+          <span> {{ course()?.sections?.length }} section </span>
+        </p>
+      </div>
+
+      <div class="bg-[#EFEFEF] border border-gray-50 rounded-xl h-fit p-5 hidden lg:block">
+        <div class="space-y-4 overflow-y-auto max-h-[300px] pr-2 playlist">
+          @for (section of course()!.sections; track section.id; let i = $index) {
+          <div
+            (click)="goToSection(i)"
+            [ngClass]="{
+              'bg-blue-50 border border-blue-500 shadow-sm': i === currentSectionIndex(),
+              'bg-white border-transparent': i !== currentSectionIndex()
+            }"
+            class="p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition"
+          >
+            <h4 class="font-medium text-sm">{{ section.name }}</h4>
+            @if (section.introduction) {
+            <p
+              class="text-xs text-gray-500 line-clamp-2 mt-2"
+              [innerHTML]="sanitizeHtml(section.introduction)"
+            ></p>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="w-full max-w-md space-y-4 mt-8 hidden lg:block">
+        <!-- Rate This Course -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mx-auto">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2 text-center">Rate This Course</h3>
+          <p class="text-sm text-[#354259] mb-4 text-center">
+            Your rating helps us improve and support you better.
+          </p>
+
+          <div class="flex items-center justify-center mb-4">
+            <app-star-rating-input
+              [size]="'md'"
+              [(rating)]="userRating"
+              (ratingChange)="onRatingChange($event)"
+            ></app-star-rating-input>
+          </div>
+
+          <div class="flex w-full pr-4">
+            <button
+              (click)="submitRating()"
+              [disabled]="userRating() === 0 || isSubmittingRating()"
+              [class.opacity-50]="userRating() === 0 || isSubmittingRating()"
+              [class.cursor-not-allowed]="userRating() === 0 || isSubmittingRating()"
+              class="py-2 px-8 w-full mx-auto max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition cursor-pointer disabled:hover:bg-blue-500"
+            >
+              {{ isSubmittingRating() ? 'Submitting...' : 'Submit' }}
+            </button>
+          </div>
+        </div>
+        @if (userCurrentRating()) {
+        <!-- Your Rating -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mx-auto">
+          <h3 class="text-sm font-semibold text-[#354259] mb-4">Your rating</h3>
+
+          <div class="flex items-center justify-start gap-4 mb-4">
+            <img
+              [src]="profileImage()"
+              alt="Profile"
+              class="w-12 h-12 rounded-full object-cover flex-shrink-0"
+            />
+            @if (isLoadingUserRating()) {
+            <div class="text-gray-500">Loading...</div>
+            } @else {
+            <app-star-rating
+              [rating]="userCurrentRating()"
+              [size]="'md'"
+              [showNumber]="true"
+            ></app-star-rating>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    <!-- LEFT CONTENT -->
+    <div class="lg:col-span-2 space-y-6 pb-15 md:pb-40 lg:pb-15">
+      <!-- TABS -->
+      <div class="flex border-b border-gray-200">
+        <button
+          class="px-4 py-2 text-sm text-[#515863] hover:text-gray-700"
+          [class.bg-gray-200]="activeTab() === 'about'"
+          (click)="activeTab.set('about')"
+        >
+          About
+        </button>
+        <button
+          class="px-4 py-2 text-sm ml-3 text-[#515863] hover:text-gray-700"
+          [class.bg-gray-200]="activeTab() === 'comment'"
+          (click)="activeTab.set('comment')"
+        >
+          Comment
+        </button>
+      </div>
+      <!-- VIDEO SECTION -->
+      @if (getCurrentSection()?.video && activeTab() == "about") {
+      <div class="w-full rounded-2xl overflow-hidden bg-black relative md:h-[450px] h-[240px]">
+        <video
+          class="w-full h-full"
+          [src]="getCurrentSection()!.video!"
+          [poster]="getCurrentSection()?.thumbnail || course()!.thumbnail || ''"
+          controls
+        ></video>
+      </div>
+      }
+
+      <!-- TAB CONTENT -->
+      @if (activeTab() === 'about' && getCurrentSection()) {
+      <app-about-tab [section]="getCurrentSection()!"></app-about-tab>
+      } @if (activeTab() === 'comment' && getCurrentSection()) {
+      <app-comments-tab class="mt-6" [sectionId]="getCurrentSection()!.id"></app-comments-tab>
+      }
+
+      <!-- Navigation Buttons -->
+      <div class="flex pt-4 border-t border-gray-300 md:mt-8 gap-4 justify-end">
+        <button
+          (click)="previousSection()"
+          [disabled]="currentSectionIndex() === 0"
+          [class.opacity-50]="currentSectionIndex() === 0"
+          [class.cursor-not-allowed]="currentSectionIndex() === 0"
+          class="px-5 py-2 flex gap-2 bg-[#C1C5CD] text-white font-medium text-sm rounded-lg transition-colors duration-200 shadow-sm hover:shadow cursor-pointer disabled:hover:shadow-none"
+        >
+          <img src="../../../../../../assets/images/Frame 1597885004 (1).svg" alt="" />
+          Previous
+        </button>
+        <button
+          (click)="nextSection()"
+          [disabled]="currentSectionIndex() === course()!.sections.length - 1"
+          [class.opacity-50]="currentSectionIndex() === course()!.sections.length - 1"
+          [class.cursor-not-allowed]="currentSectionIndex() === course()!.sections.length - 1"
+          class="px-5 py-2 flex gap-2 bg-blue-500 text-white font-medium text-sm rounded-lg transition-colors duration-200 shadow-sm hover:shadow cursor-pointer disabled:hover:shadow-none"
+        >
+          Next <img src="../../../../assets/images/Frame 1597885004.svg" alt="" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Horizontal Playlist - Fixed at Bottom -->
+  <div
+    class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 pb-safe"
+  >
+    <div class="px-4 py-3">
+      <p class="text-sm font-semibold mb-2">Sections</p>
+      <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        @for (section of course()!.sections; track section.id; let i = $index) {
+        <div
+          (click)="goToSection(i)"
+          [ngClass]="{
+            'bg-blue-50 border border-blue-500 shadow-sm': i === currentSectionIndex(),
+            'bg-white border-transparent': i !== currentSectionIndex()
+          }"
+          class="p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition"
+        >
+          <h4 class="font-medium text-sm w-48">{{ section.name }}</h4>
+          @if (section.introduction) {
+          <p
+            class="text-xs text-gray-500 line-clamp-2 mt-2"
+            [innerHTML]="sanitizeHtml(section.introduction)"
+          ></p>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+</style>

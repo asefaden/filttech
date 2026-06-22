@@ -1,0 +1,197 @@
+<div class="flex h-screen bg-[#EEF5FF]">
+  <!-- Sidebar -->
+  <aside
+    [class]="isSidebarOpen() ? 'translate-x-0' : '-translate-x-full'"
+    class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col"
+  >
+    <!-- Logo -->
+    <div class="flex items-center justify-center h-16 px-6">
+      <div class="text-xl font-bold text-gray-800">
+        <img src="../../../../assets/images/logo.svg" alt="" />
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex-1 flex flex-col">
+      <nav class="flex-1 px-4 py-6 space-y-6">
+        <a
+          routerLink="/e/dashboard"
+          routerLinkActive="bg-blue-500  text-white"
+          class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+
+        <a
+          routerLink="/e/schedule"
+          routerLinkActive="bg-blue-500 text-white"
+          class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
+          </svg>
+          <span>Schedule</span>
+        </a>
+
+        <a
+          routerLink="/e/requests"
+          routerLinkActive="bg-blue-500 text-white"
+          class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+            />
+          </svg>
+          <span>Request</span>
+        </a>
+
+        <a
+          routerLink="/e/rating"
+          routerLinkActive="bg-blue-500 text-white"
+          class="flex items-center gap-3 px-4 py-3 text-white bg-blue-500 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+            />
+          </svg>
+          <span>Rating</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="flex justify-center mb-8">
+      <button
+        (click)="logout()"
+        [disabled]="isLoggingOut()"
+        class="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-100 transition-colors border border-blue-400 text-blue-400 rounded-2xl max-w-fit cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (isLoggingOut()) {
+        <svg
+          class="animate-spin w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="#3B82F6"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="#3B82F6"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        } @else {
+        <svg class="w-5 h-5" fill="none" stroke="#3B82F6" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
+        </svg>
+        }
+        <span class="text-[#3B82F6]">
+          {{ isLoggingOut() ? 'Logging out...' : 'Log Out' }}
+        </span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  @if (isSidebarOpen()) {
+  <div (click)="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
+  }
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Header -->
+    <header
+      class="h-16 pl-8 bg-white lg:bg-[#EEF5FF] border-b border-gray-300 shadow-sm flex items-center justify-between px-6 md:pr-12"
+    >
+      <button (click)="toggleSidebar()" class="lg:hidden text-gray-600 hover:text-gray-800">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      <div class="flex-1"></div>
+      <div class="relative mr-4">
+        <button
+          (click)="toggleNotfication()"
+          (clickOutside)="isNotficaionOpen.set(false)"
+          class="relative top-0.5 cursor-pointer"
+        >
+          <img src="../../../assets/images/notfcation.svg" alt="" />
+          @if (unreadCount() > 0) {
+          <span
+            class="absolute -top-1 -right-1 bg-yellow-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold"
+          >
+            {{ unreadCount() > 9 ? '9+' : unreadCount() }}
+          </span>
+          }
+        </button>
+        @if (isNotficaionOpen()) {
+        <!-- NOTIFICATION DROPDOWN CONTAINER -->
+        <div
+          app-notfication
+          (closeDropdown)="toggleNotfication()"
+          class="w-96 absolute top-12 md:-right-12 -right-14 bg-white rounded-xl shadow-xl border border-gray-200 animate-enter z-20"
+        ></div>
+        }
+      </div>
+
+      <!-- User Profile -->
+      <div class="flex items-center gap-4">
+        <a
+          class="flex items-center gap-2 cursor-pointer rounded-lg p-1 transition-colors"
+          routerLink="profile"
+          [title]="'' + userName() + ' profile'"
+        >
+          <img
+            [src]="profileImage()"
+            [alt]="userName()"
+            class="w-9 h-9 rounded-full object-cover border border-gray-200"
+          />
+        </a>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 overflow-y-auto bg-white md:bg-[#EEF5FF] py-6 px-4 md:pr-14 md:pl-8">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

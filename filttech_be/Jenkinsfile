@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY_URL = "172.17.91.104:5000"
+        IMAGE_NAME   = "filetech-be"
+        IMAGE_TAG    = "v1"
+        FULL_IMAGE   = "${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+    }
+
+    stages {
+
+        stage("Pull from gitlab") {
+            steps {
+                checkout scmGit(
+                    branches: [[name: '*/master']],
+                    extensions: [],
+                    userRemoteConfigs: [[
+                        credentialsId: 'alet-onevas-github',
+                        url: 'http://gitlab.local/alet/webapp/filttech_b.git'
+                    ]]
+                )
+            }
+        }
+
+        stage("build docker image") {
+            steps {
+                sh """
+                sudo docker build -t ${FULL_IMAGE} .
+                """
+            }
+        }
+
+        stage("push to local registry") {
+            steps {
+                sh """
+                sudo docker push ${FULL_IMAGE}
+                """
+            }
+        }
+
+//        stage("remove dangling images") {
+//            steps {
+//                sh "sudo docker rmi \$(docker images -qa -f 'dangling=true') || true"
+//            }
+//        }
+
+    }
+}

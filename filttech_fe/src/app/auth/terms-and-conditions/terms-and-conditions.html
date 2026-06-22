@@ -1,0 +1,96 @@
+<!-- BACKDROP -->
+<div class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-60">
+  <!-- MODAL -->
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl p-8 relative">
+    <!-- Close (X) -->
+    <button
+      class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
+      (click)="close()"
+    >
+      ✕
+    </button>
+
+    <!-- Title -->
+    <h2 class="text-2xl font-semibold text-center mb-6">Terms & Conditions</h2>
+    <p class="text-center">
+      By using our platform and services, you agree to the following Terms and Conditions. Please
+      read them carefully before participating.
+    </p>
+    <!-- Scrollable Content -->
+    <div
+      class="max-h-80 overflow-y-auto pr-2 space-y-4 text-[#515863] text-sm leading-relaxed mt-10"
+    >
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+
+      <p>
+        Sed tempor, velit quis tristique malesuada, orci lorem tincidunt nisl, eget hendrerit velit
+        mi sed lorem. Suspendisse potenti. Ut ut arcu vitae lacus volutpat volutpat.
+      </p>
+
+      <p>
+        Nullam a nibh sed metus facilisis tincidunt. Quisque sed eros sit amet nulla tincidunt
+        viverra. Vivamus tristique magna ut sollicitudin dictum.
+      </p>
+
+      <p>
+        Duis ac orci nec magna varius dictum. Curabitur vitae odio eget libero laoreet porttitor.
+        Pellentesque id magna quis nulla aliquet venenatis.
+      </p>
+
+      <p>By accepting, you agree to all terms listed above.</p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae risus vel turpis
+        consequat volutpat. Integer euismod, ipsum id facilisis volutpat, odio augue fermentum nisl,
+        in viverra erat leo id magna.
+      </p>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="flex justify-end gap-4 mt-8">
+      <!-- Close -->
+      <button
+        class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+        (click)="close()"
+      >
+        Close
+      </button>
+
+      <!-- Accept -->
+      <button
+        class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+        (click)="accept()"
+      >
+        Accept
+      </button>
+    </div>
+  </div>
+</div>

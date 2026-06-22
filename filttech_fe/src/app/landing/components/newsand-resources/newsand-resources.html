@@ -1,0 +1,81 @@
+<div class="max-w-7xl mx-auto px-4">
+  <h2 class="text-[#212B36] font-semibold text-4xl mb-2 max-w-sm">Latest News & Resources</h2>
+  <span class="pt-1 border-t-4 border-[#3B82F6] w-20 h-1 block mb-4"> </span>
+  <p class="text-lg text-[#696984] mb-12">
+    Stay updated with the latest tech trends, tutorials, and insights from our expert community.
+  </p>
+  @if (isLoading()) {
+  <div class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+  </div>
+  } @else {
+  <div class="grid grid-cols-1 lg:grid-cols-12 lg:gap-10 gap-y-8">
+    <!-- Left Big Article (Featured Post) -->
+    @if (featuredPost()) {
+    <div class="space-y-4 lg:col-span-5 col-span-7">
+      <img
+        [src]="featuredPost()!.thumbnail"
+        [alt]="featuredPost()!.title"
+        class="w-full h-72 object-cover rounded-xl shadow-md"
+      />
+
+      <div class="space-y-8 mt-6">
+        <h3 class="text-xl font-semibold">{{ featuredPost()!.title }}</h3>
+
+        <p class="text-gray-500 text-sm max-w-md line-clamp-2">
+          {{ stripHtml(featuredPost()!.content) }}
+        </p>
+
+        <a
+          [routerLink]="['/s/blogs', featuredPost()!.id]"
+          class="border border-blue-500 text-blue-500 w-fit px-4 py-2 rounded-full text-sm hover:bg-blue-50 transition flex gap-4 items-center"
+        >
+          Read Article
+          <img src="../../assets/images/smallArrow 1.svg" alt="" />
+        </a>
+      </div>
+    </div>
+    }
+
+    <!-- Right List (Other Posts) -->
+    <div class="flex flex-col gap-12 col-span-7 md:pl-8">
+      @for (post of otherPosts(); track post.id) {
+      <!-- Article -->
+      <article class="flex gap-8 items-start md:flex-row flex-col">
+        <img
+          [src]="post.thumbnail"
+          [alt]="post.title"
+          class="md:max-w-80 w-full h-50 object-cover rounded-4xl shadow"
+        />
+
+        <div class="flex flex-col justify-between gap-4 h-full flex-1">
+          <h4 class="font-semibold text-xl text-[#1E1E1E]">
+            {{ post.title }}
+          </h4>
+
+          <p class="text-[#7F848D] text-sm line-clamp-3">
+            {{ stripHtml(post.content) }}
+          </p>
+
+          <a
+            class="text-[#181919] flex items-center gap-4 hover:underline hover:underline-offset-2 cursor-pointer"
+          >
+            Read Article <img src="../../assets/images/smallArrow 1.svg" class="" alt="" />
+          </a>
+        </div>
+      </article>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- View More -->
+  <div class="flex justify-end mt-6">
+    <a
+      class="text-blue-600 font-medium text-sm hover:underline-offset-2 hover:underline"
+      routerLink="/s/blogs"
+    >
+      View More <span class="text-2xl">→</span>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="relative min-w-42" clickOutside (clickOutside)="close()">
+  <!-- Button -->
+  <button
+    (click)="toggle()"
+    class="flex items-center gap-2 justify-end text-nowrap w-full px-4 text-gray-600 cursor-pointer"
+  >
+    <span>{{ displayLabel() }}</span>
+
+    <svg width="12" height="6" viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0L6 6L0 0H12Z" fill="#1F2937" />
+    </svg>
+  </button>
+
+  <!-- Dropdown Items -->
+  @if (open()) {
+  <div
+    class="absolute right-0 mt-3 bg-white border border-gray-200 rounded-2xl z-20 max-h-60 overflow-y-auto"
+  >
+    <div class="pb-1 border-b border-gray-300 w-full text-center mb-2 py-2.5">
+      {{ placeholder() }}
+    </div>
+    @for (opt of options(); track opt.value) {
+    <button
+      class="w-full text-center px-4 py-2.5 hover:bg-gray-100 text-nowrap"
+      (click)="choose(opt)"
+      [class]="displayLabel() === opt.label ? 'bg-gray-100' : ''"
+    >
+      {{ opt.label }}
+    </button>
+    }
+  </div>
+  }
+</div>

@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Inter Display', serif;
+  --font-body: 'Inter', sans-serif;
+}
+@layer utilities {
+  /* In styles.css or global.css */
+  .accordion-content {
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    overflow: hidden;
+  }
+  .animate-enter {
+    @apply opacity-0 translate-y-2;
+    animation: dropdown-in 0.25s forwards;
+  }
+
+  @keyframes dropdown-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* fix the header not being sticky for moble view  */
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100dvh; /* this is the key for mobile */
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Force sticky to work on iOS Safari */
+@supports (position: sticky) or (-webkit-position: sticky) {
+  .sticky {
+    position: sticky;
+    position: -webkit-sticky;
+  }
+}
+
+section {
+  scroll-margin-top: 100px; /* Adjust this value to the height of your sticky header */
+}
+
+body {
+  scroll-behavior: smooth;
+}
+
+/* Track */
+.playlist::-webkit-scrollbar-track {
+  margin-right: 3px;
+  box-shadow: inset 0 0 5px rgb(197, 197, 197);
+}
+
+/* Handle */
+.playlist::-webkit-scrollbar-thumb {
+  background: #8cb5e2;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+.playlist::-webkit-scrollbar-thumb:hover {
+  background: #2596be;
+  cursor: all-scroll;
+}
+
+/* Scrollbar width */
+.playlist::-webkit-scrollbar {
+  width: 6px;
+}
+
+.swal2-shown body {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+.swal2-shown html {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Optional: if you use the dark backdrop, hide scrollbar but keep it usable */
+.swal2-container.swal2-backdrop-show {
+  overflow: hidden;
+}

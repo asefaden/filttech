@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filtech-be
+  namespace: cp
+  labels:
+    app: filtech-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filtech-be
+  template:
+    metadata:
+      labels:
+        app: filtech-be
+    spec:
+      containers:
+        - name: filtech-be
+          image: 172.17.91.104:5000/filetech-be:v1
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 80
+              protocol: TCP
+
+          # --------------------------------------------------
+          # Environment variables (REQUIRED by entrypoint)
+          # --------------------------------------------------
+          env:
+            # Laravel core
+            - name: APP_ENV
+              value: "production"
+            - name: APP_DEBUG
+              value: "false"
+            - name: APP_URL
+              value: "https://filtech.et"
+
+            # APP_KEY MUST exist (entrypoint enforces this)
+            - name: APP_KEY
+              value: "base64:KXrBuf+R0XeqX/ETwZjgVEL+hxUvcObwxFxwfFRWfQg="
+
+            # JWT Auth
+            - name: JWT_SECRET
+              value: "qb7JjhEGG0Tc2craI5Q1bNARlh2I9xfB0R3SUtaiezhx2gzhkISiaEMMDsBokIG9"
+
+            # Database configuration
+            - name: DB_CONNECTION
+              value: "mysql"
+            - name: DB_HOST
+              value: "172.17.91.22"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: "fintech"
+            - name: DB_USERNAME
+              value: "systemadmin"
+            - name: DB_PASSWORD
+              value: "9055word1!"
+
+            # No queues (matches Dockerfile & Supervisor)
+            - name: QUEUE_CONNECTION
+              value: "sync"
+
+          # --------------------------------------------------
+          # Resource limits (important for PHP)
+          # --------------------------------------------------
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+
+          # --------------------------------------------------
+          # Health checks (match Dockerfile)
+          # --------------------------------------------------
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 40
+            periodSeconds: 20
+
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filtech-be
+  namespace: cp
+spec:
+  selector:
+    app: filtech-be
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
+

@@ -1,0 +1,62 @@
+<nav
+  app-header
+  (openLoginModal)="openLogin()"
+  class="w-full py-6 flex items-center justify-between px-6 md:px-10 lg:px-30 sticky top-0 bg-white z-50 shadow-[0_0_40px_0_rgba(59,130,246,0.06)]"
+></nav>
+<main class="max-w-7xl px-4 mx-auto bg-white">
+  <!-- HERO SECTION -->
+  <section
+    app-hero-section
+    id="home"
+    class="flex flex-col md:flex-row md:px-10 px-6 py-10 md:py-20 relative lg:px-20"
+  ></section>
+  <section app-category class="mt-6 md:mt-10"></section>
+  <section app-whychooseus class="mt-8 md:mt-30"></section>
+  <section app-popular-courses id="courses" class="mt-12"></section>
+  <section app-instructors class="mt-12 md:mt-30" id="experts"></section>
+  <section app-student-feedbacks class="py-8 md:py-16 px-4 mt-10 md:mt-20"></section>
+
+  <section app-newsand-resources id="blog" class="py-8 md:py-16 mt-10 md:mt-20 px-4"></section>
+  <section app-faq class="mt-10 md:mt-20 px-4" id="faq"></section>
+  <section class="mt-10 md:mt-20">
+    <!-- Banner -->
+    <div class="">
+      <div class="bg-[#4F8CEF] rounded-xl shadow-lg overflow-hidden relative">
+        <div
+          class="px-8 py-12 md:px-16 md:py-16 flex flex-col md:flex-row items-center justify-between gap-8"
+        >
+          <!-- Text Section -->
+          <div class="text-white text-center md:text-left">
+            <h2 class="text-3xl font-bold leading-tight">
+              Transform Your Career<br />
+              <span class="relative">
+                With Expert-Led Tech Courses
+                <span class="absolute -bottom-2 left-0 w-32 h-1 bg-yellow-400 rounded-full"></span>
+              </span>
+            </h2>
+          </div>
+
+          <!-- Button -->
+          <div>
+            <a
+              routerLink="/s/courses"
+              class="bg-white relative z-10 w-fit text-gray-800 font-semibold px-8 py-4 rounded-xl shadow-md hover:shadow-lg hover:bg-gray-100 transition transform hover:-translate-y-0.5"
+            >
+              Explore Courses
+            </a>
+          </div>
+          <div class="absolute right-0 md:top-1 bottom-0">
+            <img src="../../assets/images/2 716.svg" class="animate-pulse" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section app-contact-us class="mt-12 md:mt-30"></section>
+</main>
+
+<!-- Footer -->
+<footer
+  class="bg-white py-8 md:py-14 pb-6 md:pb-8 w-full border-t border-[#e6e8ec] mt-12 md:mt-30"
+  app-footer
+></footer>

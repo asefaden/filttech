@@ -1,0 +1,79 @@
+<div class="max-w-7xl mx-auto pt-20 md:px-12 pb-20 px-4">
+  <div class="flex flex-col items-center gap-4">
+    <h1 class="font-medium text-4xl">Meet our <span class="font-bold"> Experts </span></h1>
+    <p class="text-[#1F2937] text-center max-w-lg mx-auto">
+      Lorem ipsum dolor sit amet consectetur. Nunc morbi sit cras ut ut turpis massa mus pharetra.
+    </p>
+  </div>
+  <div class="flex items-center gap-3 justify-end mt-8">
+    <!-- Search bar -->
+    <div class="flex w-66 h-10 bg-white items-center rounded-xl px-4 border border-gray-200 gap-2">
+      <img src="../../../assets/images/Vector.svg" class="w-4 h-4" alt="" />
+      <input
+        type="text"
+        placeholder="Search experts..."
+        [(ngModel)]="searchQuery"
+        class="bg-transparent w-full outline-none text-sm placeholder:text-sm placeholder:text-gray-400"
+      />
+    </div>
+  </div>
+  <!-- Loading State -->
+  @if (loading()) {
+  <div class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+  }
+
+  <div class="md:mt-15 mt-8">
+    @if (!loading() && experts().length === 0) {
+    <div class="text-center py-20">
+      <p class="text-gray-500 text-lg">No experts found</p>
+      @if (searchQuery()) {
+      <p class="text-gray-400 text-sm mt-2">Try adjusting your search terms</p>
+      }
+    </div>
+    }
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+      @for (expert of experts(); track expert.id) {
+      <div
+        class="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-sm transform hover:scale-105 transition-transform duration-300"
+      >
+        <div class="h-50 bg-linear-to-b from-gray-100 to-gray-200 flex items-center justify-center">
+          <img
+            [src]="expert.profile_image || '../../../assets/images/Image.svg'"
+            [alt]="expert.name"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="p-6 text-center">
+          <h3 class="text-xl font-semibold text-gray-900">{{ expert.name }}</h3>
+          <p class="text-gray-500 mt-1">{{ expert.profession }}</p>
+
+          <div class="flex items-center justify-between mt-4 border-t pt-2 border-[#FBBF24] px-4">
+            <div class="flex items-center">
+              <span class="text-orange-500 text-2xl">★</span>
+              <span class="text-sm font-bold text-gray-900 ml-1">{{
+                getRatingNumber(expert.rating).toFixed(1)
+              }}</span>
+            </div>
+
+            <span class="text-gray-500 ml-1 text-sm"
+              >({{ expert.accepted_appointments_count }} students)</span
+            >
+          </div>
+          <div class="flex justify-center">
+            <a
+              [routerLink]="expert.id"
+              class="mx-auto flex gap-3 items-center text-[#88B6FF] px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-[#E1ECFF] transition mt-2 hover:shadow-sm"
+            >
+              View profile
+              <img src="../../../assets/images/smallArrow 1.svg" alt="" class="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

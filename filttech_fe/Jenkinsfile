@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage("Pull from github") {
+          steps {
+              checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'alet-onevas-github', url: 'http://gitlab.local/alet/webapp/filttech.git']])
+          }
+        }
+        stage("build docker image") {
+            steps {
+                sh "sudo docker build -t 172.17.91.104:5000/fil-tech-lms-fe ."
+            }
+        }
+
+        stage("push to local registry") {
+            steps {
+                sh "sudo docker push 172.17.91.104:5000/fil-tech-lms-fe"
+            }
+        }
+
+    }
+}
+
+
+
+

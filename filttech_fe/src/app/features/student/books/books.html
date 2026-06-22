@@ -1,0 +1,92 @@
+<div class="max-w-6xl mx-auto">
+  <p
+    class="text-center max-w-2xl mx-auto md:py-20 py-10 lg:text-4xl md:text-3xl text-2xl px-4 font-bold"
+  >
+    Download Your Favorite Book & Start Learning Today!
+  </p>
+  <div class="flex justify-end">
+    <!-- Search -->
+    <div class="flex w-66 h-10 bg-white items-center rounded-xl px-4 border border-gray-200 gap-2">
+      <img src="../../../assets/images/Vector.svg" class="w-4 h-4" alt="" />
+      <input
+        type="text"
+        placeholder="Search books..."
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        class="bg-transparent w-full outline-none text-sm placeholder:text-sm placeholder:text-gray-400"
+      />
+    </div>
+  </div>
+  <!-- Loading State -->
+  @if (loading()) {
+  <div class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+  }
+
+  <!-- Grid -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+    @if (!loading() && books().length === 0) {
+    <div class="col-span-full text-center py-20">
+      <p class="text-gray-500 text-lg">No books found</p>
+      @if (searchQuery()) {
+      <p class="text-gray-400 text-sm mt-2">Try adjusting your search terms</p>
+      }
+    </div>
+    } @for (book of books(); track book.id) { @if(book.book_file){
+    <article
+      class="bg-white rounded-xl shadow-[0_0_60px_0_rgba(0,0,0,0.06)] p-5 flex items-start gap-4"
+    >
+      <!-- Left: Book image -->
+      <div class="w-28 shrink-0">
+        <div class="book-3d">
+          <img
+            [src]="book.thumbnail || '../../../../assets/images/image 60.svg'"
+            [alt]="book.title + ' cover'"
+            class="cover w-28 h-36 object-cover"
+          />
+        </div>
+      </div>
+
+      <!-- Right: Content -->
+
+      <div class="flex-1 min-h-full flex flex-col">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h2 class="lg:text-lg text-base font-medium line-clamp-1">
+              {{ book.title }}
+            </h2>
+            <p class="text-slate-500 text-sm mt-1 max-w-[36ch] line-clamp-3 font-light">
+              {{ book.description }}
+            </p>
+          </div>
+        </div>
+
+        <!-- extra meta & actions -->
+        <div class="mt-auto flex items-center justify-start">
+          <div class="flex items-center gap-3">
+            <button
+              (click)="downloadBook(book)"
+              class="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-blue-700 text-white text-sm py-2 px-3 rounded-lg shadow-sm transition-colors"
+            >
+              <img src="../../../../assets/images/download.svg" alt="" />
+              <span class="chip">{{ book.book_file_size }}</span>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+    } }
+  </section>
+
+  <!-- Pagination -->
+  @if (!loading() && books().length > 0) {
+  <app-user-pagination
+    [currentPage]="currentPage()"
+    [total]="pagination().total"
+    [perPage]="pageSize"
+    (pageChange)="onPageChange($event)"
+  />
+  }
+</div>

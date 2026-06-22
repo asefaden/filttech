@@ -1,0 +1,71 @@
+<!-- Header -->
+<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+  <h2 class="font-semibold text-gray-800">Notifications</h2>
+  <button
+    class="text-sm text-[#1A1918] font-medium hover:underline disabled:opacity-50 bg-[#EFEFEF] px-2 py-2"
+    (click)="markAllAsRead()"
+    [disabled]="unreadCount() === 0"
+  >
+    Mark all as read
+  </button>
+</div>
+
+<!-- LIST -->
+<div #scrollContainer class="space-y-2 overflow-y-auto h-[60vh] playlist overflow-x-hidden">
+  <h3 class="px-5 py-3 text-sm font-medium text-gray-500">Recent</h3>
+
+  @for (notification of notifications(); track notification.id) {
+  <div
+    [class]="
+      isRead(notification)
+        ? 'px-5 py-4 flex items-start justify-between cursor-pointer hover:bg-gray-50 transition-colors'
+        : 'px-5 py-4 bg-blue-50 flex items-start justify-between cursor-pointer hover:bg-blue-100 transition-colors'
+    "
+    (click)="onNotificationClick(notification)"
+  >
+    <div class="flex gap-3 flex-1">
+      <!-- Dynamic Icon with Background Color -->
+      <div
+        [class]="
+          'w-10 h-10 flex items-center justify-center rounded-lg ' + getIconBgColor(notification)
+        "
+      >
+        <img [src]="getIcon(notification)" [alt]="notification.title + ' icon'" class="w-6 h-6" />
+      </div>
+
+      <div class="flex-1">
+        <p class="font-medium text-gray-800">{{ notification.title }}</p>
+        <p class="text-sm text-gray-600 mt-1">{{ notification.body.message }}</p>
+        <p class="text-xs text-gray-400 mt-1">{{ notification.ago }}</p>
+      </div>
+    </div>
+
+    <!-- View Button (only for unread) -->
+    @if (!isRead(notification)) {
+    <button
+      class="px-4 py-1 text-sm bg-white border rounded-full text-gray-700 hover:bg-gray-50 transition-colors ml-2 flex-shrink-0"
+      (click)="onNotificationClick(notification); $event.stopPropagation()"
+    >
+      View
+    </button>
+    }
+  </div>
+  } @empty {
+  <div class="px-5 py-8 text-center text-gray-500">
+    <p>No notifications yet</p>
+  </div>
+  }
+
+  <!-- Loading indicator -->
+  @if (isLoading()) {
+  <div class="px-5 py-4 text-center">
+    <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+    <p class="text-sm text-gray-500 mt-2">Loading more...</p>
+  </div>
+  }
+
+  <!-- End of list indicator -->
+  @if (!hasMore() && notifications().length > 0) {
+  <div class="px-5 py-4 text-center text-sm text-gray-400">No more notifications</div>
+  }
+</div>

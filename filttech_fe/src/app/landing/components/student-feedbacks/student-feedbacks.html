@@ -1,0 +1,50 @@
+<div class="max-w-6xl mx-auto text-center mb-12">
+  <div class="flex justify-center">
+    <span class="pt-1 border-t-3 border-[#3B82F6] w-20 h-1 block mb-4"> </span>
+  </div>
+
+  <h2 class="text-3xl font-bold">Student Feedbacks</h2>
+  <p class="text-gray-500 mt-2 text-sm">What Students Says About Academy Name</p>
+</div>
+
+@if (isLoading()) {
+<div class="text-center py-12">
+  <p class="text-gray-500">Loading feedbacks...</p>
+</div>
+} @else if (error()) {
+<div class="text-center py-12">
+  <p class="text-red-500">{{ error() }}</p>
+</div>
+} @else {
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+  @for (feedback of feedbacks(); track feedback.id) {
+  <!-- Card -->
+  <div class="p-6 rounded-xl shadow-md bg-white border border-gray-100">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div>
+          <img
+            [src]="feedback.user_image"
+            [alt]="feedback.user_name"
+            class="object-cover rounded-full w-13 h-13"
+          />
+        </div>
+
+        <div>
+          <h3 class="font-semibold">{{ feedback.user_name }}</h3>
+        </div>
+      </div>
+      <span class=""><img src="../../assets/images/qt.svg" alt="" /></span>
+    </div>
+
+    <p class="text-gray-500 text-sm mt-4 leading-relaxed">"{{ feedback.message }}"</p>
+
+    <div class="flex items-center space-x-1 mt-4 text-xl">
+      @for (filled of getStarArray(feedback.rating); track $index) {
+      <span [class]="filled ? 'text-yellow-500' : 'text-gray-300'">★</span>
+      }
+    </div>
+  </div>
+  }
+</div>
+}

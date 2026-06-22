@@ -1,0 +1,142 @@
+<div class="">
+  <div class="bg-[#EEF5FF] md:py-16 py-8 flex flex-col items-center gap-4">
+    <h1 class="font-bold text-4xl">Our courses</h1>
+    <p class="text-[#1F2937]">Find a Perfect Online Course</p>
+  </div>
+  <div class="max-w-7xl mx-auto pt-12 md:pb-20 pb-8 px-4">
+    <h2 class="text-2xl font-medium md:mb-12">Popular Courses</h2>
+
+    @if (popularCourses().length > 0) {
+    <app-course-slider [courses]="popularCourses()"></app-course-slider>
+    } @if (popularLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <div class="relative w-12 h-12">
+        <div
+          class="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full"
+        ></div>
+        <div
+          class="absolute top-0 left-0 w-full h-full border-4 border-blue-400 rounded-full border-t-transparent animate-spin"
+        ></div>
+      </div>
+    </div>
+    }@if (error()){
+    <div class="text-center py-2">
+      <p class="text-red-300">{{ error() }}</p>
+    </div>
+    }
+
+    <div class="md:mt-30 mt-10 space-y-6" id="all-courses-section"></div>
+    <div class="flex justify-between items-center flex-wrap gap-y-4">
+      <h2 class="text-2xl font-medium">All Courses</h2>
+      <div class="flex items-center gap-4 flex-wrap gap-y-4 mb-2 justify-between">
+        <!-- Search -->
+        <div
+          class="flex w-72 h-10 bg-white items-center rounded-xl px-4 border border-gray-200 gap-2"
+        >
+          <img src="../../../assets/images/Vector.svg" class="w-4 h-4" alt="" />
+          <input
+            type="text"
+            placeholder="Search Courses, Experts..."
+            class="bg-transparent w-full outline-none text-sm placeholder:text-sm placeholder:text-gray-400"
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+
+        <!-- Custom Sort Dropdown -->
+        <app-dropdown-select
+          [options]="sortOptions()"
+          placeholder="Sort By"
+          [(selectedOption)]="selectedSort"
+        ></app-dropdown-select>
+        <button (click)="toggleFavorites()" class="flex gap-2 items-center transition-colors">
+          Favorites
+          <svg
+            [ngClass]="{ 'text-blue-500': showFavorites(), 'text-[#88B6FF]': !showFavorites() }"
+            width="20"
+            height="17"
+            viewBox="0 0 20 17"
+            [attr.fill]="showFavorites() ? 'currentColor' : 'none'"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.39667 15.7832C5.81167 13.849 0.6875 9.42792 0.6875 5.44867C0.6875 2.81967 2.61708 0.6875 5.27083 0.6875C6.64583 0.6875 8.02083 1.14583 9.85417 2.97917C11.6875 1.14583 13.0625 0.6875 14.4375 0.6875C17.0912 0.6875 19.0208 2.81967 19.0208 5.44867C19.0208 9.427 13.8967 13.849 11.3117 15.7832C10.4408 16.434 9.2675 16.434 8.39667 15.7832Z"
+              stroke="currentColor"
+              stroke-width="1.375"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <div class="w-full px-6 pb-6 mt-6">
+        <div class="flex items-end justify-start">
+          <!-- Tabs -->
+          <div
+            class="tab flex items-center space-x-8 text-gray-500 font-medium pr-12 overflow-x-auto border-b border-gray-200 pb-3 w-full"
+          >
+            <button
+              (click)="selectTab(null)"
+              [ngClass]="{
+                'text-blue-600 font-semibold ': activeCategory() === null,
+                'hover:text-blue-600 cursor-pointer': activeCategory() !== null
+              }"
+            >
+              All
+            </button>
+            @for (category of categories(); track category.id) {
+            <button
+              (click)="selectTab(category.id)"
+              [ngClass]="{
+                'text-blue-600 font-semibold ': activeCategory() === category.id,
+                'hover:text-blue-600 cursor-pointer': activeCategory() !== category.id
+              }"
+            >
+              {{ category.name }}
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (popularLoading()) {
+    <div class="flex justify-center items-center py-12 h-125">
+      <div class="relative w-12 h-12">
+        <div
+          class="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full"
+        ></div>
+        <div
+          class="absolute top-0 left-0 w-full h-full border-4 border-blue-400 rounded-full border-t-transparent animate-spin"
+        ></div>
+      </div>
+    </div>
+    } @else if (error()) {
+    <div class="text-center py-12">
+      <p class="text-red-300">{{ error() }}</p>
+    </div>
+    } @else {
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-16 px-4"
+    >
+      @for (course of courses(); track course.id) {
+      <app-course-card
+        [course]="course"
+        [has_favorite]="course.is_favorite === undefined ? false : true"
+      ></app-course-card>
+      } @empty {
+      <div class="text-center text-gray-500 col-span-full py-12">No courses found.</div>
+      }
+    </div>
+    } @if (total() > perPage()) {
+    <app-user-pagination
+      [currentPage]="currentPage()"
+      [total]="total()"
+      [perPage]="perPage()"
+      (pageChange)="onPageChange($event)"
+    ></app-user-pagination>
+    }
+  </div>
+</div>

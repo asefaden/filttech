@@ -1,0 +1,178 @@
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Student Requests</h1>
+    <p class="text-gray-500 mt-1">View Students Requests</p>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    @if (stats() === null) {
+    <!-- Skeleton Loading -->
+    @for (i of [1, 2, 3, 4]; track i) {
+    <div class="bg-white rounded-2xl shadow-sm p-6 animate-pulse">
+      <div class="h-4 bg-gray-200 rounded w-24 mb-3"></div>
+      <div class="h-8 bg-gray-200 rounded w-16"></div>
+    </div>
+    } } @else { @for (stat of stats(); track $index) {
+    <div class="bg-white rounded-2xl shadow-sm p-6 flex justify-between items-center">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">{{ stat.label }}</p>
+          @if (stat.change) {
+          <p
+            class="text-sm mt-2"
+            [class.text-green-500]="stat.isPositive"
+            [class.text-red-500]="!stat.isPositive"
+          >
+            This week: {{ stat.change }}
+          </p>
+          }
+        </div>
+      </div>
+      <p class="md:text-3xl font-bold text-gray-800">{{ stat.value }}</p>
+    </div>
+    } }
+  </div>
+
+  <!-- Main Content Card -->
+  <div class="bg-white rounded-xl shadow-sm md:p-6">
+    <!-- Tabs -->
+    <div class="flex items-center gap-3 py-4 px-4 bg-[#F9FAFA] max-w-full">
+      <button
+        (click)="setActiveTab('sent')"
+        [class.text-blue-500]="activeTab() === 'sent'"
+        [class.!bg-[#EEF5FF]]="activeTab() === 'sent'"
+        [class.border-blue-500]="activeTab() === 'sent'"
+        [class.text-gray-600]="activeTab() !== 'sent'"
+        class="md:px-6 px-2 py-3 font-medium transition-colors hover:text-blue-500 flex-1 bg-white cursor-pointer"
+      >
+        Requests
+      </button>
+      <button
+        (click)="setActiveTab('accepted')"
+        [class.text-blue-500]="activeTab() === 'accepted'"
+        [class.!bg-[#EEF5FF]]="activeTab() === 'accepted'"
+        [class.border-blue-500]="activeTab() === 'accepted'"
+        [class.text-gray-600]="activeTab() !== 'accepted'"
+        class="md:px-6 py-3 px-2 font-medium transition-colors hover:text-blue-500 flex-1 bg-white cursor-pointer"
+      >
+        Accepted
+      </button>
+      <button
+        (click)="setActiveTab('declined')"
+        [class.text-blue-500]="activeTab() === 'declined'"
+        [class.!bg-[#EEF5FF]]="activeTab() === 'declined'"
+        [class.border-blue-500]="activeTab() === 'declined'"
+        [class.text-gray-600]="activeTab() !== 'declined'"
+        class="md:px-6 py-3 px-2 font-medium transition-colors hover:text-blue-500 flex-1 bg-white cursor-pointer"
+      >
+        Declined
+      </button>
+      <button
+        (click)="setActiveTab('passed')"
+        [class.text-blue-500]="activeTab() === 'passed'"
+        [class.!bg-[#EEF5FF]]="activeTab() === 'passed'"
+        [class.border-blue-500]="activeTab() === 'passed'"
+        [class.text-gray-600]="activeTab() !== 'passed'"
+        class="md:px-6 py-3 px-2 font-medium transition-colors hover:text-blue-500 flex-1 bg-white rounded-lg"
+      >
+        passed
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+    }
+
+    <!-- Requests List -->
+    <div class="space-y-4">
+      @if (!loading() && requests().length === 0) {
+      <div class="text-center py-12 text-gray-500">
+        <p>No {{ activeTab() }} requests found</p>
+      </div>
+      } @else if (!loading()) { @for (request of requests(); track request.id) {
+      <div
+        class="flex items-center flex-col md:flex-row md:justify-between gap-y-2 p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        <!-- Left: Avatar and Info -->
+        <div class="flex items-center gap-4">
+          <img
+            [src]="request.user_image || getDefaultAvatar(request.user_name)"
+            [alt]="request.user_name"
+            class="w-12 h-12 rounded-full shrink-0"
+          />
+          <div>
+            <h3 class="text-sm font-medium text-gray-800">{{ request.user_name }}</h3>
+            <div class="flex items-center gap-2 mt-1 text-sm text-gray-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <span>{{ request.schedule_date | date : 'EEEE' }}</span>
+              <span class="mx-1">|</span>
+              <span
+                >{{ request.schedule_from_time_formatted }} -
+                {{ request.schedule_to_time_formatted }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Time Ago and Actions -->
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-gray-400">{{ request.ago }}</span>
+
+          @if (activeTab() === 'sent') {
+          <div class="flex items-center gap-2">
+            <button
+              (click)="handleDecline(request.id)"
+              [disabled]="isProcessing(request.id)"
+              [class.opacity-50]="isProcessing(request.id)"
+              [class.cursor-not-allowed]="isProcessing(request.id)"
+              class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:hover:bg-white"
+            >
+              {{ isProcessing(request.id) ? 'Processing...' : 'Decline' }}
+            </button>
+            <button
+              (click)="handleAccept(request.id)"
+              [disabled]="isProcessing(request.id)"
+              [class.opacity-50]="isProcessing(request.id)"
+              [class.cursor-not-allowed]="isProcessing(request.id)"
+              class="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors disabled:hover:bg-blue-500"
+            >
+              Accept
+            </button>
+          </div>
+          } @else if (activeTab() === 'declined') {
+          <span class="px-4 py-2 text-sm text-red-600 bg-red-50 rounded-lg">Declined</span>
+          } @else if (activeTab() === 'accepted') {
+          <span class="px-4 py-2 text-sm text-green-600 bg-green-50 rounded-lg">Accepted</span>
+          } @else if (activeTab() === 'passed') {
+          <span class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg">Passed</span>
+          }
+        </div>
+      </div>
+      } }
+    </div>
+
+    <!-- Pagination Component -->
+    @if (!loading() && totalRequests() > itemsPerPage) {
+    <div class="mt-6">
+      <app-user-pagination
+        [currentPage]="currentPage()"
+        [total]="totalRequests()"
+        [perPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)"
+      />
+    </div>
+    }
+  </div>
+</div>

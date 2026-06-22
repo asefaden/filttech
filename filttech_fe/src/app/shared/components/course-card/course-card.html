@@ -1,0 +1,56 @@
+<div
+  class="bg-white shadow-lg rounded-2xl p-5 h-full flex flex-col snap-center md:snap-start hover:shadow-xl transition-all duration-300"
+  [style.minWidth.px]="cardwidth()"
+>
+  <img
+    [src]="course().thumbnail"
+    [alt]="course().name"
+    class="w-full h-40 object-cover rounded-xl"
+    (error)="$any($event.target).src = backupImage"
+  />
+
+  <div class="flex flex-col space-y-4 pt-4 flex-1">
+    <!-- Category -->
+    <div class="flex justify-between">
+      <span class="text-sm text-gray-500 font-medium block line-clamp-1">
+        {{ course().category }}
+      </span>
+      @if(has_favorite()){
+      <app-favorite-button [(isFavorite)]="course().is_favorite" [courseId]="course().id" />
+      }
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-xl font-semibold text-[#363A3D] line-clamp-1">
+      {{ course().name }}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
+      {{ course().description }}
+    </p>
+
+    <!-- Sections + Rating -->
+    <div class="space-y-1">
+      <span class="text-sm text-gray-500 flex gap-2 items-center">
+        <img src="../../../../assets/images/section.svg" class="mt-1" alt="" class="shrink-0" />
+        {{ course().section_count }} section
+      </span>
+
+      <div class="flex items-center">
+        <app-star-rating [rating]="getRating()" [showNumber]="false" />
+      </div>
+    </div>
+
+    <!-- Button pinned at bottom -->
+    <div class="flex justify-end mt-auto">
+      <button
+        (click)="goToCourse(course().id)"
+        class="text-[#88B6FF] flex gap-2 items-center bg-[#F5F9FF] px-4 py-2 rounded-full text-sm cursor-pointer transition hover:bg-[#E1ECFF] hover:shadow-sm"
+      >
+        View Course
+        <img src="../../../assets/images/Frame 23.svg" alt="" class="w-9 h-7" />
+      </button>
+    </div>
+  </div>
+</div>

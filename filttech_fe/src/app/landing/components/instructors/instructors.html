@@ -1,0 +1,54 @@
+<div class="w-full py-10 flex items-center flex-col lg:flex-row gap-10 px-6">
+  <!-- Heading + Subheading -->
+  <div class="mb-12 flex-3/12 max-w-sm">
+    <h2 class="text-4xl font-bold text-gray-900 mb-1">Our Expert Instructors</h2>
+    <span class="pt-1 border-t-3 border-[#3B82F6] w-16 h-1 block mb-4"> </span>
+    <p class="text-lg text-[#6D737A] max-w-2xl">
+      Learn from industry professionals with years of experience in software development, design,
+      and technology. Our experts are passionate about helping you succeed.
+    </p>
+  </div>
+
+  <!-- experts Grid -->
+  @if (loading()) {
+  <div class="text-center py-12 flex-9/12">
+    <p class="text-gray-500">Loading experts...</p>
+  </div>
+  } @else if (error()) {
+  <div class="text-center py-12 flex-9/12">
+    <p class="text-red-500">{{ error() }}</p>
+  </div>
+  } @else {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center flex-9/12">
+    @for (expert of experts().slice(0,3); track expert.id) {
+    <div
+      class="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-sm transform hover:scale-105 transition-transform duration-300"
+    >
+      <div class="h-64 bg-linear-to-b from-gray-100 to-gray-200 flex items-center justify-center">
+        <img
+          [src]="getProfileImage(expert)"
+          [alt]="expert.name"
+          class="w-full h-full object-cover"
+          (error)="$any($event.target).src = defaultImage"
+        />
+      </div>
+      <div class="p-6 text-center">
+        <h3 class="text-xl font-semibold text-gray-900">{{ expert.name }}</h3>
+        <p class="text-gray-500 mt-1">Expert</p>
+
+        <div class="flex items-center justify-between mt-4 border-t pt-2 border-[#FBBF24] px-4">
+          <div class="flex items-center">
+            <span class="text-orange-500 text-2xl">★</span>
+            <span class="text-sm font-bold text-gray-900 ml-1">{{
+              parseFloat(expert.rating).toFixed(1)
+            }}</span>
+          </div>
+
+          <span class="text-gray-500 ml-1 text-sm">(451 students)</span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
