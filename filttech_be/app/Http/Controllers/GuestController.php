@@ -30,21 +30,18 @@ class GuestController extends Controller
 
     public function popularCourses()
     {
-        // Added withCount('sections') to eliminate the N+1 database performance overhead bottleneck
         $courses = Course::with('category')->withCount('sections')->orderBy('rating', 'desc')->take(6)->get();
         
         $courses = $courses->map(function ($course) {
             return [
                 'id' => $course->id,
                 'name' => $course->name,
-                // Optional chaining fallback safeguard if a course is missing its category assignment
                 'category' => $course->category?->name ?? 'Uncategorized',
                 'description' => $course->description,
                 'likes' => $course->likes,
                 'rating' => $course->rating,
                 'review' => $course->review,
                 'thumbnail' => $course->thumbnail,
-                // Uses the eager-loaded count directly from the query attributes index
                 'section_count' => $course->sections_count,
             ];
         });
@@ -56,7 +53,7 @@ class GuestController extends Controller
 
     public function popularExperts()
     {
-        // 1. Defensively verify if the target Role name map is active for your API guard context
+        // Defensively verify if the target Role is active in the DB to prevent Spatie crashes
         $roleExists = Role::where('name', 'Expert')
                           ->where('guard_name', 'api')
                           ->exists();
@@ -64,7 +61,6 @@ class GuestController extends Controller
         if ($roleExists) {
             $experts = User::role('Expert')->orderBy('rating', 'desc')->take(6)->get();
         } else {
-            // 2. Clear out application crash states by falling back to an empty collection frame structure
             $experts = collect([]);
         }
 
@@ -93,7 +89,6 @@ class GuestController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         });
 
-        // Order: featured first, then latest
         $posts = $postsQuery
             ->orderByDesc('is_featured')
             ->latest()
