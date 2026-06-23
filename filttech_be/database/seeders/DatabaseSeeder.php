@@ -20,6 +20,11 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        // ሮሎቹ በዳታቤዙ ውስጥ ከሌሉ በራሱ ይፈጥራቸዋል
+        Role::firstOrCreate(['name' => 'Expert', 'guard_name' => 'api']);
+        
+        // ሌሎች ሮሎች ካሉህም እዚህ ጋር firstOrCreate በመጠቀም መቀጠል ትችላለህ
+        Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'api']);
 
         $this->call([
             RoleSeeder::class,
