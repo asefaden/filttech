@@ -18,21 +18,22 @@ FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www/html
 
-# System dependencies
+# System dependencies (libxml2 እና የተረጋጉ ላይብረሪዎችን እዚህ አስቀምጠናል)
 RUN apk add --no-cache \
     git curl zip unzip \
-    libpng-dev libxml2-dev oniguruma-dev libzip-dev \
+    libpng libpng-dev \
+    libxml2 libxml2-dev \
+    oniguruma-dev libzip-dev \
     freetype-dev libjpeg-turbo-dev libwebp-dev \
     icu-dev icu-data-full \
     mysql-client \
-    nginx supervisor \
-    libxml2
+    nginx supervisor
 
-# PHP extensions
+# PHP extensions ማስተናገጃ
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip xml intl
 
-# Redis extension
+# Redis extension (ሊጠፉ የማይገባቸውን ላይብረሪዎች ጠብቀን የቆሻሻ ፋይሎችን ብቻ እናጠፋለን)
 RUN apk add --no-cache pcre-dev $PHPIZE_DEPS \
     && pecl install redis \
     && docker-php-ext-enable redis \
