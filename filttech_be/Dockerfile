@@ -18,24 +18,34 @@ FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www/html
 
-# System dependencies (ላይብረሪዎች እንዳይጠፉ ጠብቀን እንጭናለን)
+# System dependencies (ሁሉም ላይብረሪዎች በቋሚነት እንዲቀመጡ እዚህ ተካተዋል)
 RUN apk add --no-cache \
-    git curl zip unzip \
-    libpng libpng-dev \
-    libxml2 libxml2-dev \
-    oniguruma-dev libzip-dev \
-    freetype-dev libjpeg-turbo-dev libwebp-dev \
-    icu-dev icu-data-full \
+    git \
+    curl \
+    zip \
+    unzip \
+    libpng \
+    libpng-dev \
+    libxml2 \
+    libxml2-dev \
+    oniguruma-dev \
+    libzip-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    icu-dev \
+    icu-data-full \
     mysql-client \
     pcre-dev \
     $PHPIZE_DEPS \
-    nginx supervisor
+    nginx \
+    supervisor
 
 # PHP extensions ማስተናገጃ
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip xml intl
 
-# Redis extension ጭነት (ላይብረሪዎችን ሳናጠፋ በንጹህ እናስቀምጣለን)
+# Redis extension ጭነት (ያለ ምንም apk del ማጽጃ በቀጥታ መጫን)
 RUN pecl install redis \
     && docker-php-ext-enable redis
 
