@@ -18,7 +18,7 @@ FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www/html
 
-# System dependencies (libxml2 እና የተረጋጉ ላይብረሪዎችን እዚህ አስቀምጠናል)
+# System dependencies (ላይብረሪዎች እንዳይጠፉ ጠብቀን እንጭናለን)
 RUN apk add --no-cache \
     git curl zip unzip \
     libpng libpng-dev \
@@ -27,17 +27,17 @@ RUN apk add --no-cache \
     freetype-dev libjpeg-turbo-dev libwebp-dev \
     icu-dev icu-data-full \
     mysql-client \
+    pcre-dev \
+    $PHPIZE_DEPS \
     nginx supervisor
 
 # PHP extensions ማስተናገጃ
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip xml intl
 
-# Redis extension (ሊጠፉ የማይገባቸውን ላይብረሪዎች ጠብቀን የቆሻሻ ፋይሎችን ብቻ እናጠፋለን)
-RUN apk add --no-cache pcre-dev $PHPIZE_DEPS \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del pcre-dev $PHPIZE_DEPS
+# Redis extension ጭነት (ላይብረሪዎችን ሳናጠፋ በንጹህ እናስቀምጣለን)
+RUN pecl install redis \
+    && docker-php-ext-enable redis
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
