@@ -31,7 +31,7 @@ export class LoginModal {
   showPassword = signal(false);
 
   // SMS Subscribe
-  smsPhone = '1234'; // Replace with your SMS short code
+  smsPhone = '9228'; // Replace with your SMS short code
   smsMessage = 'OK';
   isMobile = signal(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
 
