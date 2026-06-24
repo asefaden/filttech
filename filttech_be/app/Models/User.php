@@ -28,6 +28,10 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     use TwoFactorAuthenticatable;
     use HasRoles, HasUuids, InteractsWithMedia;
 
+    // 1. Laravel የ Primary Key አይነት ስትሪንግ (UUID) መሆኑን እንዲያውቅ እነዚህን 3 መስመሮች እንጨምራለን
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -46,9 +50,10 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         'rating',
     ];
 
+    // 2. የ JWT Identifier እሴትን በግልጽ ወደ String በመቀየር ለ ጥቅሉ እንሰጠዋለን
     public function getJWTIdentifier()
     {
-        return $this->getKey();
+        return (string) $this->getKey();
     }
 
     public function getJWTCustomClaims()
@@ -93,8 +98,6 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     {
         return $this->getMedia('profile_image')->last()?->getUrl() ?? $this->profile_photo_url;
     }
-
-
 
     /**
      * Get the attributes that should be cast.
