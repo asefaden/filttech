@@ -19,77 +19,76 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request)
-{
-    // ቫሊዴሽኑን ከተለያዩ የስልክ ፎርማቶች ጋር እንዲስማማ እናላላዋለን
-    $validated = $request->validate([
-        'phone_number' => 'required|string|min:9|max:15',
-        'password' => 'required|string|min:4',
-    ]);
+    {
+        $validated = $request->validate([
+            'phone_number' => 'required|string|min:9|max:15',
+            'password' => 'required|string|min:4',
+        ]);
 
-    // የመጣውን ስልክ ቁጥር ማጽዳት (ለምሳሌ + ምልክት ካለው ማጥፋት)
-    $phone = trim($validated['phone_number']);
-    $phone = str_replace('+', '', $phone);
+        $phone = trim($validated['phone_number']);
+        $phone = str_replace('+', '', $phone);
 
-    // ስልኩ በ 09 ከጀመረ ወደ 2519 መቀየር (ፕላትፎርሙ 09 ካመጣ)
-    if (str_starts_with($phone, '0')) {
-        $phone = '251' . substr($phone, 1);
-    }
+        if (str_starts_with($phone, '0')) {
+            $phone = '251' . substr($phone, 1);
+        }
 
-    $user = User::where('phone_number', $phone)->first();
+        $user = User::where('phone_number', $phone)->first();
 
-    if ($user) {
-        if (!$user->status) {
-            $user->update([
-                'password' => Hash::make($validated['password']),
-                'status' => true,
-            ]);
-            if (!$user->hasRole('User')) {
-                $user->assignRole('User');
+        if ($user) {
+            if (!$user->status) {
+                $user->update([
+                    'password' => Hash::make($validated['password']),
+                    'status' => true,
+                ]);
+                if (!$user->hasRole('User')) {
+                    $user->assignRole('User');
+                }
+            } else {
+                return response()->json(['message' => 'User already exists'], 409);
             }
         } else {
-            return response()->json(['message' => 'User already exists'], 409);
+            $name = $request->input('name') ?: 'VAS User';
+            
+            $user = User::create([
+                'name' => $name,
+                'phone_number' => $phone,
+                'password' => Hash::make($validated['password']),
+                'status' => true,
+                'username' => $this->generateUniqueUsername($name),
+            ]);
+            $user->assignRole('User');
         }
-    } else {
-        $name = $request->input('name') ?: 'VAS User'; // ስም ከሌለ 'VAS User' ይለዋል
-        
-        $user = User::create([
-            'name' => $name,
-            'phone_number' => $phone,
-            'password' => Hash::make($validated['password']),
-            'status' => true,
-            'username' => $this->generateUniqueUsername($name),
+
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => $user
         ]);
-        $user->assignRole('User');
     }
 
-    return response()->json([
-        'message' => 'User registered successfully',
-        'user' => $user
-    ]);
-}
-   public function unsubscribe(Request $request)
-{
-    $validated = $request->validate([
-        'phone_number' => 'required|string|min:9|max:15',
-    ]);
+    public function unsubscribe(Request $request)
+    {
+        $validated = $request->validate([
+            'phone_number' => 'required|string|min:9|max:15',
+        ]);
 
-    $phone = trim($validated['phone_number']);
-    $phone = str_replace('+', '', $phone);
-    if (str_starts_with($phone, '0')) {
-        $phone = '251' . substr($phone, 1);
+        $phone = trim($validated['phone_number']);
+        $phone = str_replace('+', '', $phone);
+        if (str_starts_with($phone, '0')) {
+            $phone = '251' . substr($phone, 1);
+        }
+
+        $user = User::where('phone_number', $phone)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->update([
+            'status' => false,
+        ]);
+
+        return response()->json(['message' => 'User unsubscribed successfully'], 200);
     }
 
-    $user = User::where('phone_number', $phone)->first();
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
-    }
-
-    $user->update([
-        'status' => false,
-    ]);
-
-    return response()->json(['message' => 'User unsubscribed successfully'], 200);
-}
     /**
      * Get a JWT via given credentials.
      *
@@ -102,34 +101,39 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('phone_number', $request->username)
+        // የመጣውን ዩዘርኔም ወይም ስልክ ማጽዳት
+        $username = trim($request->username);
+        $username = str_replace('+', '', $username);
+        if (is_numeric($username) && str_starts_with($username, '0')) {
+            $username = '251' . substr($username, 1);
+        }
+
+        // ተጠቃሚውን መፈለግ
+        $user = User::where('phone_number', $username)
+            ->orWhere('email', $username)
+            ->orWhere('username', $username)
             ->first();
 
-        if (! $user) {
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        if (! $user->status) {
+        if (!$user->status) {
             return response()->json(['message' => 'Account is inactive. Please register again.'], 404);
         }
 
-        $credentials = [
-            'password' => $request->password,
-        ];
-
-        if (filter_var($request->username, FILTER_VALIDATE_EMAIL)) {
-            $credentials['email'] = $request->username;
-        } elseif (is_numeric($request->username)) {
-            $credentials['phone_number'] = $request->username;
+        // ለ Auth::attempt የሚሆን ዳታ ማዘጋጀት
+        $credentials = ['password' => $request->password];
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            $credentials['email'] = $username;
+        } elseif (is_numeric($username)) {
+            $credentials['phone_number'] = $username;
         } else {
-            $credentials['username'] = $request->username;
+            $credentials['username'] = $username;
         }
 
-        if (! $token = Auth::attempt($credentials)) {
-            return response()->json(
-                ['message' => 'Invalid Credentials'],
-                400
-            );
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Invalid Credentials'], 400);
         }
 
         return $this->respondWithToken($token);
@@ -148,12 +152,10 @@ class AuthController extends Controller
         return response()->json($userArray);
     }
 
-    // update_profile
     public function update_profile(Request $request)
     {
         $request->validate([
             'name' => 'nullable|string',
-            //'phone_number' => 'nullable|unique:users,phone_number,' . Auth::id(),
             'email' => 'nullable|email|unique:users,email,' . Auth::id(),
             'username' => 'nullable|string|unique:users,username,' . Auth::id(),
             'profession' => 'nullable|string',
@@ -162,11 +164,10 @@ class AuthController extends Controller
         ]);
         $user = User::find(Auth::id());
 
-        if (! empty($user)) {
+        if (!empty($user)) {
             $user->update([
                 'name' => $request->name ?? $user->name,
                 'email' => $request->email ?? $user->email,
-                //'phone_number' => $request->phone_number ?? $user->phone_number,
                 'username' => $request->username ?? $user->username,
                 'profession' => $request->profession ?? $user->profession,
                 'skills' => $request->skills ?? $user->skills,
@@ -185,9 +186,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-
         Auth::logout();
-
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -208,7 +207,7 @@ class AuthController extends Controller
         if ($user->status === 0) {
             abort(400, 'Password already created!');
         }
-        if (! empty($user)) {
+        if (!empty($user)) {
             $user->update([
                 'password' => Hash::make($request->password),
                 'status' => 0,
@@ -232,15 +231,13 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $token,
-            // 'user' => $user->load('roles.permissions'),
-            //only role and permission of the user without loading the entire
             'user' => $user->roles->map(function ($role) {
                 return [
-                    'id' => $role->uuid,
+                    'id' => $role->id, // uuid ከሌለ ወደ መደበኛው id ተቀይሯል
                     'role_name' => $role->name,
                     'permissions' => $role->permissions->map(function ($permission) {
                         return [
-                            'id' => $permission->uuid,
+                            'id' => $permission->id, // uuid ወደ id ተቀይሯል
                             'name' => $permission->name,
                         ];
                     }),
@@ -261,41 +258,36 @@ class AuthController extends Controller
         }
 
         while (User::where('username', $username)->exists()) {
-            $username = Str::slug($name) . rand(1000, 1000);
+            $username = Str::slug($name) . rand(1000, 9999);
         }
 
         return $username;
     }
 
-    // change profile image
     public function update_profile_image(Request $request)
     {
         $request->validate([
-            'profile_image' => 'required|mimes:png,jpeg,jpg,svg,gif,bmp,bmp,tiff,webp',
+            'profile_image' => 'required|mimes:png,jpeg,jpg,svg,gif,bmp,tiff,webp',
         ]);
 
         $user = User::find(Auth::id());
 
-        if (! empty($user)) {
-
+        if (!empty($user)) {
             if ($request->hasFile('profile_image') && $request->file('profile_image')->isValid()) {
                 $user->addMediaFromRequest('profile_image')->toMediaCollection('profile_image');
             }
-
             return User::find(Auth::id());
         } else {
             abort(404, 'Invalid Token.');
         }
     }
 
-    // remove profile image
     public function remove_profile_image()
     {
         $user = User::find(Auth::id());
 
-        if (! empty($user)) {
+        if (!empty($user)) {
             $user->clearMediaCollection('profile_image');
-
             return User::find(Auth::id());
         } else {
             abort(404, 'Invalid Token.');
