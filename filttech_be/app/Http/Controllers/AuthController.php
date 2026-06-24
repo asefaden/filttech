@@ -19,61 +19,77 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'phone_number' => 'required|starts_with:251|digits:12',
-            'password' => 'required|string|min:4',
-        ]);
+{
+    // ቫሊዴሽኑን ከተለያዩ የስልክ ፎርማቶች ጋር እንዲስማማ እናላላዋለን
+    $validated = $request->validate([
+        'phone_number' => 'required|string|min:9|max:15',
+        'password' => 'required|string|min:4',
+    ]);
 
-        $user = User::where('phone_number', $validated['phone_number'])->first();
+    // የመጣውን ስልክ ቁጥር ማጽዳት (ለምሳሌ + ምልክት ካለው ማጥፋት)
+    $phone = trim($validated['phone_number']);
+    $phone = str_replace('+', '', $phone);
 
-        if ($user) {
-            if (!$user->status) {
-                $user->update([
-                    'password' => Hash::make($validated['password']),
-                    'status' => true,
-                ]);
-                if (!$user->hasRole('User')) {
-                    $user->assignRole('User');
-                }
-            } else {
-                return response()->json(['message' => 'User already exists'], 409);
-            }
-        } else {
+    // ስልኩ በ 09 ከጀመረ ወደ 2519 መቀየር (ፕላትፎርሙ 09 ካመጣ)
+    if (str_starts_with($phone, '0')) {
+        $phone = '251' . substr($phone, 1);
+    }
 
-            $user = User::create([
-                'name' => $request->input('name', null),
-                'phone_number' => $validated['phone_number'],
+    $user = User::where('phone_number', $phone)->first();
+
+    if ($user) {
+        if (!$user->status) {
+            $user->update([
                 'password' => Hash::make($validated['password']),
                 'status' => true,
-                'username' => $this->generateUniqueUsername($request->input('name', 'User')),
             ]);
-            $user->assignRole('User');
+            if (!$user->hasRole('User')) {
+                $user->assignRole('User');
+            }
+        } else {
+            return response()->json(['message' => 'User already exists'], 409);
         }
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => $user
+    } else {
+        $name = $request->input('name') ?: 'VAS User'; // ስም ከሌለ 'VAS User' ይለዋል
+        
+        $user = User::create([
+            'name' => $name,
+            'phone_number' => $phone,
+            'password' => Hash::make($validated['password']),
+            'status' => true,
+            'username' => $this->generateUniqueUsername($name),
         ]);
+        $user->assignRole('User');
     }
 
-    public function unsubscribe(Request $request)
-    {
-        $validated = $request->validate([
-            'phone_number' => 'required|starts_with:251|digits:12|exists:users,phone_number',
-        ]);
+    return response()->json([
+        'message' => 'User registered successfully',
+        'user' => $user
+    ]);
+}
+   public function unsubscribe(Request $request)
+{
+    $validated = $request->validate([
+        'phone_number' => 'required|string|min:9|max:15',
+    ]);
 
-        $user = User::where('phone_number', $validated['phone_number'])->first();
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $user->update([
-            'status' => false,
-        ]);
-
-        return response()->json(['message' => 'User unsubscribed successfully'], 200);
+    $phone = trim($validated['phone_number']);
+    $phone = str_replace('+', '', $phone);
+    if (str_starts_with($phone, '0')) {
+        $phone = '251' . substr($phone, 1);
     }
 
+    $user = User::where('phone_number', $phone)->first();
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    $user->update([
+        'status' => false,
+    ]);
+
+    return response()->json(['message' => 'User unsubscribed successfully'], 200);
+}
     /**
      * Get a JWT via given credentials.
      *
