@@ -42,11 +42,11 @@ class AuthController extends Controller
         } else {
 
             $user = User::create([
-                'name' => $request->name ?? null,
+                'name' => $request->input('name', null),
                 'phone_number' => $validated['phone_number'],
                 'password' => Hash::make($validated['password']),
                 'status' => true,
-                'username' => $this->generateUniqueUsername($request->name ?? 'User'),
+                'username' => $this->generateUniqueUsername($request->input('name', 'User')),
             ]);
             $user->assignRole('User');
         }
